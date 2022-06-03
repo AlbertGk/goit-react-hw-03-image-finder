@@ -5,9 +5,20 @@ import { Searchbar } from 'components/Searchbar';
 import { ImageGallery } from 'components/ImageGallery';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
 import { finderInstance } from 'api/client';
+import { Button } from 'components/Button';
+import { Modal } from 'components/Modal';
+
+// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+
+// import { Oval } from 'react-loader-spinner';
+
+
+
 
 class App extends Component {
-  static defaultProps = {};
+  static defaultProps = {
+    isModalOpen: false,
+  };
 
   static propTypes = {};
 
@@ -17,7 +28,7 @@ class App extends Component {
     error: null,
 
     lookingValue: '',
-    // q: '',
+    page: 1,
   };
 
   handleChange = event => {
@@ -25,45 +36,47 @@ class App extends Component {
     this.setState({ lookingValue: event.target.value });
   };
 
-  // handleSubmit = event => {
-  //   event.preventDefault();
-  //   this.setState({ q: event.target.value });
-
-  // };
-
-  // async componentDidMount() {
-  //   this.setState({ isLoading: true });
-
-  //   try {
-  //     const response = await finderInstance.get(
-  //       `?q=${this.state.q}&page=1&key=26513861-7ba7a860ef1b492cf85cf7d68&&image_type=photo&orientation=horizontal&per_page=12`
-  //     );
-  //     this.setState({ pictures: response.data.hits });
-  //     console.log(response);
-  //   } catch (error) {
-  //     this.setState({ error });
-  //   } finally {
-  //     this.setState({ isLoading: false });
-  //   }
-  // }
-
-  handleSubmit = async (event) => {
+  handleSubmit = async event => {
     event.preventDefault();
     this.setState({ isLoading: true });
-console.log(this.state.lookingValue);
+    console.log(this.state.lookingValue);
     try {
       const response = await finderInstance.get(
-        `?q=${this.state.lookingValue}&page=1&key=26513861-7ba7a860ef1b492cf85cf7d68&&image_type=photo&orientation=horizontal&per_page=12`
+        `?q=${this.state.lookingValue}&page=${this.state.page}&key=26513861-7ba7a860ef1b492cf85cf7d68&&image_type=photo&orientation=horizontal&per_page=12`
       );
       console.log(response);
       this.setState({ pictures: response.data.hits });
-      
     } catch (error) {
       this.setState({ error });
     } finally {
       this.setState({ isLoading: false });
     }
-  }
+  };
+  
+  handleLoadMore = async event => {
+    event.preventDefault();
+    this.setState(prevState => {
+      //console.log(prevState.page);
+      return { page: prevState.page + 1 };
+    });
+    this.setState({ isLoading: true });
+    try {
+      const response = await finderInstance.get(
+        `?q=${this.state.lookingValue}&page=${this.state.page}&key=26513861-7ba7a860ef1b492cf85cf7d68&&image_type=photo&orientation=horizontal&per_page=12`
+      );
+      this.setState(prevState => ({
+        pictures: [...prevState.pictures, ...response.data.hits],
+      }));
+    } catch (error) {
+      this.setState({ error });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
+
+  handleModalOpenClose = () => {
+  
+}
 
   render() {
     const { pictures, lookingValue } = this.state;
@@ -75,9 +88,12 @@ console.log(this.state.lookingValue);
           onChange={this.handleChange}
           value={lookingValue}
         />
+        {/* <Oval color="#00BFFF" height={80} width={80} ariaLabel="loading" /> */}
         <ImageGallery>
           <ImageGalleryItem pictures={pictures} />
+          <Modal isModalOpen={this.props.isModalOpen} />
         </ImageGallery>
+        <Button pictures={pictures} onClick={this.handleLoadMore} />
       </div>
     );
   }
