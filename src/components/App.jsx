@@ -16,9 +16,7 @@ import { Modal } from 'components/Modal';
 
 
 class App extends Component {
-  static defaultProps = {
-    isModalOpen: false,
-  };
+  static defaultProps = {};
 
   static propTypes = {};
 
@@ -29,6 +27,8 @@ class App extends Component {
 
     lookingValue: '',
     page: 1,
+
+    isModalOpen: false,
   };
 
   handleChange = event => {
@@ -39,27 +39,25 @@ class App extends Component {
   handleSubmit = async event => {
     event.preventDefault();
     this.setState({ isLoading: true });
-    console.log(this.state.lookingValue);
+    // console.log(this.state.lookingValue);
     try {
       const response = await finderInstance.get(
         `?q=${this.state.lookingValue}&page=${this.state.page}&key=26513861-7ba7a860ef1b492cf85cf7d68&&image_type=photo&orientation=horizontal&per_page=12`
       );
       console.log(response);
-      this.setState({ pictures: response.data.hits });
+      this.setState({ pictures: response.data.hits, page: 2 });
     } catch (error) {
       this.setState({ error });
     } finally {
       this.setState({ isLoading: false });
     }
   };
-  
+
   handleLoadMore = async event => {
     event.preventDefault();
-    this.setState(prevState => {
-      //console.log(prevState.page);
-      return { page: prevState.page + 1 };
-    });
+
     this.setState({ isLoading: true });
+    console.log(this.state.page);
     try {
       const response = await finderInstance.get(
         `?q=${this.state.lookingValue}&page=${this.state.page}&key=26513861-7ba7a860ef1b492cf85cf7d68&&image_type=photo&orientation=horizontal&per_page=12`
@@ -72,15 +70,31 @@ class App extends Component {
     } finally {
       this.setState({ isLoading: false });
     }
+    this.setState(prevState => {
+      //console.log(prevState.page);
+      return { page: prevState.page + 1 };
+    });
   };
 
   handleModalOpenClose = () => {
-  
-}
+    if (this.state.isModalOpen) {
+      this.setState({ isModalOpen: false });
+    } else {
+      this.setState({ isModalOpen: true });
+    }
+  };
+
+  handleModalCloseByKey = (event) => {
+  console.log(event.code);  
+  if (event.key === 'Escape' && this.state.isModalOpen) {
+    this.setState({ isModalOpen: false });
+    console.log(event.code);
+  }
+  };
 
   render() {
     const { pictures, lookingValue } = this.state;
-    console.log(pictures);
+    // console.log(pictures);
     return (
       <div className={styles.App}>
         <Searchbar
@@ -90,8 +104,15 @@ class App extends Component {
         />
         {/* <Oval color="#00BFFF" height={80} width={80} ariaLabel="loading" /> */}
         <ImageGallery>
-          <ImageGalleryItem pictures={pictures} />
-          <Modal isModalOpen={this.props.isModalOpen} />
+          <ImageGalleryItem
+            pictures={pictures}
+            onClick={this.handleModalOpenClose}
+          />
+          <Modal
+            isModalOpen={this.state.isModalOpen}
+            onClick={this.handleModalOpenClose}
+            onKeyPress={this.handleModalCloseByKey}
+          />
         </ImageGallery>
         <Button pictures={pictures} onClick={this.handleLoadMore} />
       </div>
