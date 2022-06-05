@@ -105,20 +105,27 @@ class App extends Component {
           onChange={this.handleChange}
           value={lookingValue}
         />
-        {!isLoading ?
-        (<ImageGallery>
+        {!isLoading ? (
+          <ImageGallery>
             <ImageGalleryItem
               pictures={pictures}
               onClick={this.handleModalOpenClose}
             />
-          <Modal
-            isModalOpen={this.state.isModalOpen}
-            onClick={this.handleModalOpenClose}
-            onKeyDown={this.handleModalCloseByKey}
-            bigPicture={this.state.bigPicture}
-          />
-        </ImageGallery>) :(<Loader type="spin" color="#3f51b5" />)}
-        <Button pictures={pictures} onClick={this.handleLoadMore} isLoading={ isLoading}/>
+            <Modal
+              isModalOpen={this.state.isModalOpen}
+              onClick={this.handleModalOpenClose}
+              onKeyDown={this.handleModalCloseByKey}
+              bigPicture={this.state.bigPicture}
+            />
+          </ImageGallery>
+        ) : (
+          <Loader type="spin" color="#3f51b5" />
+        )}
+        <Button
+          pictures={pictures}
+          onClick={this.handleLoadMore}
+          isLoading={isLoading}
+        />
       </div>
     );
   }
