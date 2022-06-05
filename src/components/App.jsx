@@ -7,8 +7,9 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem';
 import { finderInstance } from 'api/client';
 import { Button } from 'components/Button';
 import { Modal } from 'components/Modal';
+import { Loader } from 'components/Loader';
 
-// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+//import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 // import { Oval } from 'react-loader-spinner';
 
@@ -22,6 +23,7 @@ class App extends Component {
 
   state = {
     pictures: [],
+    bigPicture: [],
     isLoading: false,
     error: null,
 
@@ -76,15 +78,22 @@ class App extends Component {
     });
   };
 
-  handleModalOpenClose = () => {
+  handleModalOpenClose = (id) => {
     if (this.state.isModalOpen) {
       this.setState({ isModalOpen: false });
     } else {
       this.setState({ isModalOpen: true });
     }
+
+    const uniqueBigPicture = this.state.pictures.find(
+      picture => picture.id === id
+    );
+    this.setState({ bigPicture: uniqueBigPicture });
+    console.log(this.state.bigPicture);
   };
 
   handleModalCloseByKey = (event) => {
+  event.preventDefault();  
   console.log(event.code);  
   if (event.key === 'Escape' && this.state.isModalOpen) {
     this.setState({ isModalOpen: false });
@@ -93,25 +102,26 @@ class App extends Component {
   };
 
   render() {
-    const { pictures, lookingValue } = this.state;
+    const { pictures, lookingValue, isLoading } = this.state;
     // console.log(pictures);
-    return (
+    return (      
       <div className={styles.App}>
         <Searchbar
           onSubmit={this.handleSubmit}
           onChange={this.handleChange}
           value={lookingValue}
         />
-        {/* <Oval color="#00BFFF" height={80} width={80} ariaLabel="loading" /> */}
         <ImageGallery>
-          <ImageGalleryItem
-            pictures={pictures}
-            onClick={this.handleModalOpenClose}
-          />
+          {isLoading ? <Loader /> :
+            <ImageGalleryItem
+              pictures={pictures}
+              onClick={this.handleModalOpenClose}
+            />}
           <Modal
             isModalOpen={this.state.isModalOpen}
             onClick={this.handleModalOpenClose}
-            onKeyPress={this.handleModalCloseByKey}
+            onKeyDown={this.handleModalCloseByKey}
+            bigPicture={this.state.bigPicture}
           />
         </ImageGallery>
         <Button pictures={pictures} onClick={this.handleLoadMore} />
