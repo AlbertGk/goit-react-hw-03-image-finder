@@ -1,9 +1,9 @@
 import styles from '../styles/Modal.module.css';
 
-export const Modal = ({ isModalOpen, onClick, onKeyDown, bigPicture }) => {
+export const Modal = ({ isModalOpen, bigPicture }) => {
   return (
     isModalOpen && (
-      <div className={styles.Overlay} onClick={onClick} onKeyDown={onKeyDown} tabIndex={0} >
+      <div className={styles.Overlay}>
         <div className={styles.Modal}>
           <img src={bigPicture.largeImageURL} alt="" />
         </div>

@@ -87,7 +87,6 @@ class App extends Component {
   };
 
   handleModalCloseByKey = (event) => {
-  event.preventDefault();  
   console.log(event.code);  
   if (event.key === 'Escape' && this.state.isModalOpen) {
     this.setState({ isModalOpen: false });
@@ -99,32 +98,33 @@ class App extends Component {
     const { pictures, lookingValue, isLoading } = this.state;
     // console.log(pictures);
     return (
-      <div className={styles.App}>
+      <div
+        className={styles.App}
+        onKeyDown={this.handleModalCloseByKey}
+        tabIndex="-1"
+        onClick={this.handleModalOpenClose}
+      >
         <Searchbar
           onSubmit={this.handleSubmit}
           onChange={this.handleChange}
           value={lookingValue}
         />
-        {!isLoading ? (
-          <ImageGallery>
-            <ImageGalleryItem
-              pictures={pictures}
-              onClick={this.handleModalOpenClose}
-            />
-            <Modal
-              isModalOpen={this.state.isModalOpen}
-              onClick={this.handleModalOpenClose}
-              onKeyDown={this.handleModalCloseByKey}
-              bigPicture={this.state.bigPicture}
-            />
-          </ImageGallery>
-        ) : (
-          <Loader type="spin" color="#3f51b5" />
-        )}
+
+        <ImageGallery>
+          <ImageGalleryItem
+            pictures={pictures}
+            onClick={this.handleModalOpenClose}
+          />
+        </ImageGallery>
+        {isLoading && <Loader type="spin" color="#3f51b5" />}
         <Button
           pictures={pictures}
           onClick={this.handleLoadMore}
           isLoading={isLoading}
+        />
+        <Modal
+          isModalOpen={this.state.isModalOpen}
+          bigPicture={this.state.bigPicture}
         />
       </div>
     );
