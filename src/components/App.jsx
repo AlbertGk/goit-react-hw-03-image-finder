@@ -9,12 +9,6 @@ import { Button } from 'components/Button';
 import { Modal } from 'components/Modal';
 import { Loader } from 'components/Loader';
 
-//import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-
-// import { Oval } from 'react-loader-spinner';
-
-
-
 
 class App extends Component {
   static defaultProps = {};
@@ -104,27 +98,27 @@ class App extends Component {
   render() {
     const { pictures, lookingValue, isLoading } = this.state;
     // console.log(pictures);
-    return (      
+    return (
       <div className={styles.App}>
         <Searchbar
           onSubmit={this.handleSubmit}
           onChange={this.handleChange}
           value={lookingValue}
         />
-        <ImageGallery>
-          {isLoading ? <Loader /> :
+        {!isLoading ?
+        (<ImageGallery>
             <ImageGalleryItem
               pictures={pictures}
               onClick={this.handleModalOpenClose}
-            />}
+            />
           <Modal
             isModalOpen={this.state.isModalOpen}
             onClick={this.handleModalOpenClose}
             onKeyDown={this.handleModalCloseByKey}
             bigPicture={this.state.bigPicture}
           />
-        </ImageGallery>
-        <Button pictures={pictures} onClick={this.handleLoadMore} />
+        </ImageGallery>) :(<Loader type="spin" color="#3f51b5" />)}
+        <Button pictures={pictures} onClick={this.handleLoadMore} isLoading={ isLoading}/>
       </div>
     );
   }

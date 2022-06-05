@@ -1,12 +1,12 @@
-//import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+// export const Loader = () => {
+//     <div>
+//       <Oval color="#00BFFF" height={80} width={80} ariaLabel="loading" />;
+//     </div>;
+// }
 
-import { Oval } from 'react-loader-spinner';
+import ReactLoading from 'react-loading';
 
-export const Loader = () => {
-    <div>
-      <Oval color="#00BFFF" height={80} width={80} ariaLabel="loading" />;
-    </div>;
-}
-
-
+export const Loader = ({ type, color }) => (
+  <ReactLoading type={type} color={color} height={100} width={100} />
+);
 
