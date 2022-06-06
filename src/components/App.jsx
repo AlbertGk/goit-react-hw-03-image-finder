@@ -102,7 +102,7 @@ class App extends Component {
         className={styles.App}
         onKeyDown={this.handleModalCloseByKey}
         tabIndex="-1"
-        onClick={this.handleModalOpenClose}
+        // onClick={this.handleModalOpenClose}
       >
         <Searchbar
           onSubmit={this.handleSubmit}
@@ -125,6 +125,7 @@ class App extends Component {
         <Modal
           isModalOpen={this.state.isModalOpen}
           bigPicture={this.state.bigPicture}
+          onClick={this.handleModalOpenClose}
         />
       </div>
     );
